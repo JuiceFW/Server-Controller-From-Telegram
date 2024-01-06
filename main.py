@@ -39,7 +39,7 @@ except:
     except Exception as ex:
         print(str(traceback.format_exc()))
         exit()
-Write me a GitHub Readme file for a Python script with name: "Server Controller From Telegram".
+
 try:
     bot = telebot.TeleBot(TOKEN)
 except:
