@@ -10,7 +10,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 if not os.path.exists(os.path.join(BASE_DIR, "config.py")):
     with open(os.path.join(BASE_DIR, "config.py"), "w", encoding='utf-8') as file:
-        file.write("""TOKEN = '6670280199:AAHwSXYWZ0ukJz2JW56NiQ2kJqHEZuslWrQ' # Bot Token from @BotFather
+        file.write("""TOKEN = '' # Bot Token from @BotFather
 ADMIN_ID = 111111111 # Your ID in telegram""")
     print("[INFO] Created **config.py**! Please, enter all needed data there!")
     os._exit(0)
