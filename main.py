@@ -1,7 +1,8 @@
 from multiprocessing.dummy import Process
 from telebot import types
-import traceback
 import subprocess
+import traceback
+import datetime
 import logging
 import telebot
 import time
@@ -57,7 +58,7 @@ except:
     print(traceback.format_exc())
     logging.critical(traceback.format_exc())
 
-def delete_in_time(message_id: int, chat_id: int, time_to_wait: int = 60):
+def delete_in_time(message_id: int, chat_id: int, time_to_wait: int = 60) -> None:
     try:
         time.sleep(time_to_wait)
         bot.delete_message(chat_id, message_id)
