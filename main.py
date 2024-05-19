@@ -1,12 +1,15 @@
-from multiprocessing.dummy import Process
 from telebot import types
+
+from multiprocessing.dummy import Process
 import subprocess
 import traceback
-import datetime
 import logging
 import telebot
 import time
 import os
+
+from config import TOKEN, ADMIN_ID
+
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 if not os.path.exists(os.path.join(BASE_DIR, "config.py")):
@@ -16,14 +19,15 @@ ADMIN_ID = 111111111 # Your ID in telegram""")
     print("[INFO] Created **config.py**! Please, enter all needed data there!")
     os._exit(0)
 
-from config import TOKEN, ADMIN_ID
 
 if not TOKEN or not ADMIN_ID:
     print("[ERROR] Please, enter all needed data in config.py file!")
     os._exit(0)
 
+
 turning_off = False
 rebooting = False
+
 
 try:
     logging.basicConfig(filename=os.path.join(BASE_DIR, 'logs.log'),
@@ -58,7 +62,9 @@ except:
     print(traceback.format_exc())
     logging.critical(traceback.format_exc())
 
+
 def delete_in_time(message_id: int, chat_id: int, time_to_wait: int = 60) -> None:
+    """ Deletes message in given time. """
     try:
         time.sleep(time_to_wait)
         bot.delete_message(chat_id, message_id)
@@ -66,7 +72,10 @@ def delete_in_time(message_id: int, chat_id: int, time_to_wait: int = 60) -> Non
         print("[ERROR] " + str(traceback.format_exc()))
         logging.critical(traceback.format_exc())
 
+
 def turn_off_in_time(chat_id: int, message_id: int, timing: int) -> None:
+    """ Turns off the server in given time. """
+
     global turning_off
 
     markup = types.InlineKeyboardMarkup()
@@ -97,6 +106,7 @@ def turn_off_in_time(chat_id: int, message_id: int, timing: int) -> None:
         bot.edit_message_text(f"Выключение...", chat_id, message_id, reply_markup=markup)
 
         os.system("shutdown -h now")
+
 
 def reboot_in_time(chat_id: int, message_id: int, timing: int) -> None:
     global rebooting
@@ -129,6 +139,7 @@ def reboot_in_time(chat_id: int, message_id: int, timing: int) -> None:
         bot.edit_message_text(f"Перезагрузка...", chat_id, message_id, reply_markup=markup)
 
         os.system("reboot now")
+
 
 def get_ip() -> str:
     output = None
@@ -165,6 +176,7 @@ def get_ip() -> str:
 
     return str(d)
 
+
 @bot.message_handler(commands=['start', 'menu', 'hello'])
 def Welcome(message):
     if message.from_user.id != ADMIN_ID:
@@ -178,6 +190,7 @@ def Welcome(message):
     bot.send_message(message.from_user.id, "Нажмите на кнопку ниже!", reply_markup=markup)
 
     bot.delete_message(message.chat.id, message.id)
+
 
 @bot.callback_query_handler(func = lambda call: True)
 def callback_answer(call):
@@ -253,6 +266,7 @@ def callback_answer(call):
     elif call.data == "delete_message":
         bot.delete_message(author_id, call.message.id)
 
+
 def after_command_enter(msg, message_id):
     if msg.text.lower() == "отмена":
         markup = types.InlineKeyboardMarkup()
@@ -306,6 +320,7 @@ def after_command_enter(msg, message_id):
             logging.critical(traceback.format_exc())
         
         bot.edit_message_text(f"Ввод совершен успешно! Получаемые данные:\n\n{output}", msg.chat.id, message_id, reply_markup=markup)
+
 
 while True:
     try:
