@@ -56,8 +56,44 @@ markup = types.InlineKeyboardMarkup()
 item1 = types.InlineKeyboardButton("Удалить", callback_data='delete_message')
 markup.add(item1)
 
+def get_ip() -> str:
+    output = None
+    try:
+        args = ["ip", "a"]
+        output = subprocess.run(args, stdout=subprocess.PIPE)
+    except Exception as ex:
+        print(traceback.format_exc())
+        logging.critical(traceback.format_exc())
+
+    try:
+        output = output.stdout.decode('utf-8')
+    except:
+        print(traceback.format_exc())
+        logging.critical(traceback.format_exc())
+        return None
+    
+    if not output:
+        return None
+
+    try:
+        b = output.split("inet")
+        b = b[-2]
+        c = b.splitlines()
+        c = c[0]
+        if c.startswith(" "):
+            c = c[1:]
+        d = c.split("/24")
+        d = d[0]
+    except:
+        print(traceback.format_exc())
+        logging.critical(traceback.format_exc())
+        return None
+
+    return str(d)
+
+
 try:
-    bot.send_message(ADMIN_ID, f'Server started!', reply_markup=markup)
+    bot.send_message(ADMIN_ID, f'Server started! IP: <code>{get_ip()}</code>', reply_markup=markup, parse_mode='html')
 except:
     print(traceback.format_exc())
     logging.critical(traceback.format_exc())
@@ -139,42 +175,6 @@ def reboot_in_time(chat_id: int, message_id: int, timing: int) -> None:
         bot.edit_message_text(f"Перезагрузка...", chat_id, message_id, reply_markup=markup)
 
         os.system("reboot now")
-
-
-def get_ip() -> str:
-    output = None
-    try:
-        args = ["ip", "a"]
-        output = subprocess.run(args, stdout=subprocess.PIPE)
-    except Exception as ex:
-        print(traceback.format_exc())
-        logging.critical(traceback.format_exc())
-
-    try:
-        output = output.stdout.decode('utf-8')
-    except:
-        print(traceback.format_exc())
-        logging.critical(traceback.format_exc())
-        return None
-    
-    if not output:
-        return None
-
-    try:
-        b = output.split("inet")
-        b = b[-2]
-        c = b.splitlines()
-        c = c[0]
-        if c.startswith(" "):
-            c = c[1:]
-        d = c.split("/24")
-        d = d[0]
-    except:
-        print(traceback.format_exc())
-        logging.critical(traceback.format_exc())
-        return None
-
-    return str(d)
 
 
 @bot.message_handler(commands=['start', 'menu', 'hello'])
