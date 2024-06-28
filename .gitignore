@@ -1,4 +1,6 @@
-logs.log
+*.log
 __pycache__
 config.py
 telegram_controller.service
+*_temp.*
+test.py
